@@ -1,0 +1,98 @@
+<app-header-with-back [title]="name" [showNotificationIcon]="false"></app-header-with-back>
+ 
+<ion-content>
+
+  <div class="row-1">
+    <div class="left">
+      <h2 class="mb-1">Name: {{dataProvider.currentBooking?.address?.name}}</h2>
+      <h2>Address: {{dataProvider.currentBooking?.address?.addressLine1}}</h2>
+      <p>Phone no.: {{(this.dataProvider.currentUser?.user?.phoneNumber)?.substring(3,14)}}</p>
+      <p>City: {{dataProvider.currentBooking?.address?.city}}</p>
+      <p>Pincode: {{dataProvider.currentBooking?.address?.pincode}}</p>
+    </div>
+  </div>
+
+
+  <div class="row-2">
+    <div class="top">
+      <h2>When should the professional arrive?</h2>
+      <p>Your service will take approx. 2hr and 20 mins</p>
+      <div class="first-btns">
+        <button *ngFor="let btn of dates" (click)="selectedDate = btn; clearSlot()" [ngClass]="{active:selectedDate==btn}">
+          {{btn | date:'dd'}}<br>{{btn | date:'E'}}
+        </button>
+      </div>
+      <h2>Select Job Starting Slot</h2>
+      <div class="second-btns">
+        <button *ngFor="let items of slotsArray" (click)="startTime = items.start; endTime = items.end; setSlot(items)"
+          [ngClass]="{active:startTime==items.start}"
+
+
+          [disabled]="currentDateNTime.todaydate == selectedDate?.getDate()? (currentDateNTime.currenttime < items.start ? false : true): false">
+
+          <ng-container *ngIf = "(currentDateNTime.todaydate == selectedDate?.getDate()? (currentDateNTime.currenttime < items.start ? false : true): false) else notdisabled">
+            <img src="{{slotsIcons[items.index-1].disabled}}" alt="">
+            <div class="slot-det">
+              <p style="color: #D7D7D7;">{{slotsStatus[items.index-1]}}</p>
+              <p style="color: #D7D7D7;">{{items.start < 12 && items.end> 12 ? items.start + " AM " + '-' + (items.end - 12) + " PM " :
+                  (items.start > 12 && items.end > 12 ? (items.start-12) + " PM " + ' - ' + (items.end-12) + " PM " :
+                  items.start + " AM " + ' - ' + items.end + " AM ")}}</p>
+            </div>
+          </ng-container>
+
+          <ng-template #notdisabled>
+            <ng-container *ngIf = "(startTime == items.start) else notActiveIcon">
+              <img src="{{slotsIcons[items.index-1].light}}" alt="">
+              <div class="slot-det light">
+                <p>{{slotsStatus[items.index-1]}}</p>
+                <p>{{items.start < 12 && items.end> 12 ? items.start + " AM " + '-' + (items.end - 12) + " PM " :
+                    (items.start > 12 && items.end > 12 ? (items.start-12) + " PM " + ' - ' + (items.end-12) + " PM " :
+                    items.start + " AM " + ' - ' + items.end + " AM ")}}</p>
+              </div>
+            </ng-container>
+            <ng-template  #notActiveIcon>
+              <img src="{{slotsIcons[items.index-1].dark}}" alt="">
+              <div class="slot-det dark">
+                <p>{{slotsStatus[items.index-1]}}</p>
+                <p>{{items.start < 12 && items.end> 12 ? items.start + " AM " + '-' + (items.end - 12) + " PM " :
+                    (items.start > 12 && items.end > 12 ? (items.start-12) + " PM " + ' - ' + (items.end-12) + " PM " :
+                    items.start + " AM " + ' - ' + items.end + " AM ")}}</p>
+              </div>
+            </ng-template>
+          </ng-template>
+        </button>
+      </div>
+      <h2 style="margin-top: 20px;">Select Preferred Agent Arrival Time</h2>
+      <div class="third-btns">
+        <button *ngFor="let btn of agentArrivalArray" (click) = "selectAgentArrivalTime = btn; setTimeSlot()" [ngClass]="{active:selectAgentArrivalTime==btn}">
+          {{btn | date:'hh:mm'}} <br> {{btn | date:'aaa'}}
+        </button>
+      </div>
+      <div class="box">
+        <img src="assets/icon/select-slot/card.svg" alt="">
+        <p>Free cancellation till 3 hrs before the booked slot, post that ₹100 chargeable</p>
+      </div>
+    </div>
+    <div class="bottom" (click)="createBooking()">
+      <ion-button [disabled]="!(selectedDate && selectedTimeState)" expand="block">
+        Book
+      </ion-button>
+    </div>
+
+    <!-- new buttons -->
+    <div style="display: none;" class="footer1">
+      <ion-button class="btn1">
+        Pay After Job
+      </ion-button>
+      <ion-button class="btn2">
+        Pay Now
+      </ion-button>
+    </div>
+  </div>
+
+
+
+
+
+
+</ion-content>

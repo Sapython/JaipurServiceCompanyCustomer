@@ -1,0 +1,44 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="toolbar">
+    <ion-buttons slot="start">
+      <ion-button (click)="modalController.dismiss()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Discount</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <img src="../../../assets/images/bell.svg" alt="" />
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content id="coupans">
+  <div class="input-bar">
+    <ion-item lines="none" class="coupon-input">
+      <ion-input type="text" placeholder="Enter Coupon Code" class="coupon-text" [(ngModel)]="searchValue"></ion-input>
+      <ion-text slot="end" class="coupon-button" (click)="searchcoupons()">Apply</ion-text>
+    </ion-item>
+  </div>
+  <div *ngFor="let service Of  this.booking?.services">
+    <h2 style="margin-left: 20px;">{{service.name}}</h2>
+    <ng-container *ngFor="let discount of service.discounts">
+      <div class="coupon-card">
+        <div class="coupon-content">
+          <div class="coupon-img">
+              <img src="../../../assets/images/discount-shape.png" alt="">
+          </div>
+          <div class="coupon-text">
+            <ion-text class="card-name-text">{{ discount.type == 'flat' || discount.type == "fixed"?discount.value + " "+ discount.type  : discount.value +  ' %'}} off on {{discount.name}}</ion-text>
+            <ion-text class="min-order-text">Min. Order: ₹{{discount.minimumRequiredAmount}}</ion-text>
+            <ion-text class="discount-text">SAVE ₹{{discount?.value}} ON THIS ORDER</ion-text>
+          </div>
+        </div>
+        <p (click)="onApplyClick(this.booking?.id,discount)" class="apply-button" id="{{discount.code}}" >Apply</p>
+        <p (click)="onRemoveClick(this.booking?.id,discount)" class="remove-button none" id="{{discount.id}}" >remove</p>
+      </div>
+    </ng-container>
+  </div>
+  <button class="select-address-button" (click)="modalController.dismiss(selectedCoupan)">Done</button>
+</ion-content>
